@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta charset="utf-8">
+  <title>Complaint Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --blue: #2196F3;
+      --orange: #FF9800;
+      --bg: #f4f7f9;
+      --card-bg: #fff;
+    }
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);-webkit-font-smoothing:antialiased}
+    .phone {
+      max-width:420px;
+      margin:24px auto;
+      background:linear-gradient(180deg,#ffffff,#fbfcfd);
+      border-radius:28px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.08);
+      overflow:hidden;
+      border:8px solid #0f1724;
+    }
+    header.appbar{
+      background:transparent;padding:18px 20px;
+    }
+    .header-title{font-weight:700;font-size:18px;color:#111;}
+    .header-sub{font-size:12px;color:#666;margin-top:6px}
+    .content{padding:18px 18px 80px 18px}
+    /* top status card */
+    .status-card{
+      background: linear-gradient(90deg,var(--orange) 0%, #f7a76b 100%);
+      color:#222;
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 8px 20px rgba(252,148,77,0.12);
+      margin-bottom:18px;
+      position:relative;
+      overflow:visible;
+    }
+    .status-title{font-size:20px;font-weight:700;margin:0}
+    .status-desc{margin-top:8px;font-size:14px;color:#2b2b2b;opacity:0.95}
+    .status-date{font-size:13px;color:#222;margin-top:8px;opacity:0.9}
+
+    /* progress bar with three nodes */
+    .progress-row{display:flex;align-items:center;justify-content:center;margin:18px 0 8px 0;gap:10px}
+    .step {
+      display:flex;flex-direction:column;align-items:center;
+      width:72px;text-align:center;
+    }
+    .step .dot{
+      width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+    .connector{
+      height:6px;flex:1;border-radius:6px;background: linear-gradient(90deg,var(--blue), var(--orange));
+      position:relative;
+    }
+    .connector.dashed{background:linear-gradient(90deg,#e6e6e6,#e6e6e6);opacity:0.6}
+
+    .step small{display:block;margin-top:8px;font-size:12px;color:#444}
+
+    /* updates list */
+    .updates-title{font-weight:700;margin:18px 0 8px 0}
+    .update-card{
+      background:var(--card-bg);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(18,22,31,0.04);
+      position:relative;overflow:visible;opacity:0;transform:translateY(12px);
+      animation:fadeInUp .45s forwards;
+    }
+    @keyframes fadeInUp{to{opacity:1;transform:none}}
+    .update-header{display:flex;align-items:center;gap:10px}
+    .update-icon{width:38px;height:38px;border-radius:10px;background:#f1f6f9;display:flex;align-items:center;justify-content:center;color:var(--primary)}
+    .update-title{font-weight:700}
+    .update-time{font-size:12px;color:#666;margin-top:6px}
+    .update-comment{background:#eef7f2;border-radius:8px;padding:10px;margin-top:10px;color:#2b5a3b;font-size:13px}
+
+    /* bottom navigation */
+    .bottom-nav{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center;pointer-events:none}
+    .nav-bar{width:360px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,0.12);display:flex;justify-content:space-around;padding:10px 14px;pointer-events:auto}
+    .nav-item{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#7b8a95}
+    .nav-item.active{color:var(--primary)}
+    .small{font-size:11px;color:#999}
+    /* responsive tweak */
+    @media (max-width:420px){
+      .phone{margin:8px;border-radius:18px}
+      .nav-bar{width:92%;margin:0 4%}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone" role="application">
+    <header class="appbar">
+      <div class="header-title">Complaint Status</div>
+      <div class="header-sub" id="header-sub">Complaint ID: #—</div>
+    </header>
+
+    <div class="content">
+      <div id="statusCard" class="status-card">
+        <div class="status-title" id="statusMain">—</div>
+        <div class="status-desc" id="statusDesc">—</div>
+        <div class="status-date" id="statusDate">—</div>
+      </div>
+
+      <div class="progress-row" id="progressRow" aria-hidden="true">
+        <!-- will be rendered by JS -->
+      </div>
+
+      <div class="updates-title">Updates</div>
+      <div id="updatesList">
+        <!-- update cards rendered here -->
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-bar">
+        <div class="nav-item"><i class="fas fa-home"></i><div class="small">Dashboard</div></div>
+        <div class="nav-item"><i class="fas fa-plus-circle"></i><div class="small">Submit</div></div>
+        <div class="nav-item active"><i class="fas fa-folder"></i><div class="small">My Complaints</div></div>
+        <div class="nav-item"><i class="fas fa-user"></i><div class="small">Profile</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // small mapping for status color + icon
+    const statusMeta = {
+      "New": { color: "var(--blue)", icon: '<i class="fas fa-hourglass-start"></i>' },
+      "Under Review": { color: "var(--orange)", icon: '<i class="fas fa-search"></i>' },
+      "Resolved": { color: "var(--primary)", icon: '<i class="fas fa-check-circle"></i>' }
+    };
+
+    // helper: format
+    function fmtDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // build progress row (3 steps)
+    function renderProgress(timeline) {
+      const order = ["New","Under Review","Resolved"];
+      const row = document.getElementById("progressRow");
+      row.innerHTML = "";
+
+      // determine latest status index
+      let latest = 0;
+      if (timeline && timeline.length) {
+        latest = Math.max(0, order.indexOf(timeline[timeline.length - 1].status));
+        if (latest === -1) latest = 0;
+      }
+
+      for (let i=0;i<order.length;i++){
+        const s = order[i];
+        const meta = statusMeta[s] || { color:"#ccc", icon:'<i class="fas fa-circle"></i>' };
+
+        // dot
+        const step = document.createElement("div");
+        step.className = "step";
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        dot.style.background = (i <= latest) ? meta.color : "#e9eef2";
+        dot.innerHTML = (i <= latest) ? meta.icon : '<i class="fas fa-circle" style="font-size:12px;opacity:.6"></i>';
+        dot.style.boxShadow = (i <= latest) ? "0 6px 18px rgba(0,0,0,0.08)" : "none";
+
+        const label = document.createElement("small");
+        label.textContent = s;
+        step.appendChild(dot);
+        step.appendChild(label);
+
+        // connector between steps
+        if (i < order.length - 1) {
+          const connector = document.createElement("div");
+          connector.className = "connector";
+          // if next step is active, full gradient, otherwise dashed/gray
+          connector.classList.toggle("dashed", i >= latest);
+          // append: step + connector
+          row.appendChild(step);
+          row.appendChild(connector);
+        } else {
+          row.appendChild(step);
+        }
+      }
+    }
+
+    // render updates list with staggered animations and icons
+    function renderUpdates(timeline, complaint) {
+      const container = document.getElementById("updatesList");
+      container.innerHTML = "";
+
+      // create initial "submitted" card first (use complaint.submitted_at)
+      const submitCard = document.createElement("div");
+      submitCard.className = "update-card";
+      submitCard.style.animationDelay = "0.05s";
+      submitCard.innerHTML = `
+        <div class="update-header">
+          <div class="update-icon"><i class="fas fa-file-alt"></i></div>
+          <div>
+            <div class="update-title">Complaint Submitted</div>
+            <div class="update-time">${fmtDate(complaint.submitted_at)}</div>
+          </div>
+        </div>
+        <div class="update-comment">Your complaint has been successfully submitted and is now under review.</div>
+      `;
+      container.appendChild(submitCard);
+
+      // then timeline updates (skip duplicate 'New' if you already want it as "Submitted")
+      timeline.forEach((u, idx) => {
+        const card = document.createElement("div");
+        card.className = "update-card";
+        card.style.animationDelay = `${0.08 * (idx + 1)}s`;
+        const meta = statusMeta[u.status] || {};
+        card.innerHTML = `
+          <div class="update-header">
+            <div class="update-icon" style="background:${meta.color || '#f1f6f9'};color:#fff">${meta.icon || ''}</div>
+            <div>
+              <div class="update-title">${u.status}</div>
+              <div class="update-time">${new Date(u.updated_at).toLocaleString()}</div>
+            </div>
+          </div>
+          ${u.comment ? `<div class="update-comment">${u.comment}</div>` : ''}
+          <div style="margin-top:8px;font-size:12px;color:#666">Updated by: ${u.updated_by || 'Admin'}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // fetch timeline from backend and render everything
+    async function fetchAndRender(complaintId) {
+      if (!complaintId) {
+        alert("Enter complaint id");
+        return;
+      }
+      try {
+        const res = await axios.get(`/api/complaint-status/timeline/${complaintId}`);
+        if (!res.data.success) { alert(res.data.message || "No timeline"); return; }
+        const data = res.data;
+        // header
+        document.getElementById("header-sub").textContent = `Complaint ID: #${data.complaint.id}`;
+        // status main (latest status)
+        const timeline = data.timeline || [];
+        const latest = timeline.length ? timeline[timeline.length - 1].status : "New";
+        document.getElementById("statusMain").textContent = latest;
+        document.getElementById("statusDesc").textContent = data.complaint.description || "";
+        document.getElementById("statusDate").textContent = fmtDate(data.complaint.submitted_at);
+        renderProgress(timeline);
+        renderUpdates(timeline, data.complaint);
+      } catch (e) {
+        console.error(e);
+        alert("Error fetching timeline");
+      }
+    }
+
+    // small hook if you want to auto-load a sample id for dev
+    // fetchAndRender(1);
+
+    // add a quick UI prompt for testing if page opened standalone
+    (function addQuickInput(){
+      const input = document.createElement("input");
+      input.placeholder = "Enter complaint ID to view";
+      input.style = "position:fixed;right:20px;bottom:110px;padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;z-index:999;";
+      const btn = document.createElement("button");
+      btn.textContent = "View";
+      btn.style = "position:fixed;right:20px;bottom:72px;padding:8px 12px;border-radius:8px;border:none;background:var(--primary);color:#fff;z-index:999;";
+      document.body.appendChild(input);
+      document.body.appendChild(btn);
+      btn.onclick = ()=>fetchAndRender(input.value.trim());
+    })();
+  </script>
+</body>
+</html>

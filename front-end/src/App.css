@@ -1,0 +1,126 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* top navbar */
+.main-navbar {
+  background: #0d6efd; /* bootstrap primary blue, tweak as needed */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* a little bigger left card */
+.card-title { font-weight: 700; }
+
+/* make submit button full width and bigger */
+.btn-primary { background-color: #0d6efd; border-color: #0d6efd; }
+
+/* container spacing similar to screenshot */
+.container { max-width: 1100px; }
+
+/* make page feel airy */
+body { background: #f8f9fa; }
+.card { border-radius: 8px; }
+/* Reset margin & padding */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Navbar styles */
+nav {
+  background-color: #007bff; /* Bootstrap primary blue */
+  padding: 10px 20px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin-right: 20px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Layout container for sidebar + main */
+.page-container {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 60px); /* subtract navbar height */
+}
+
+/* Sidebar (profile info) */
+.sidebar {
+  flex: 1;
+  max-width: 250px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+/* Main content (complaint form) */
+.main {
+  flex: 3;
+  padding: 30px;
+  background-color: #fff;
+}
+
+/* Form elements spacing */
+form label {
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  margin-bottom: 15px;
+}

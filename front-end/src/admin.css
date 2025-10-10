@@ -1,0 +1,103 @@
+.admin-login-page, .admin-dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.admin-login-page h2 {
+  font-size: 28px;
+  margin-bottom: 28px;
+}
+
+.login-form input {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.login-form button {
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-form button:hover {
+  background: #1565c0;
+}
+
+.error {
+  color: red;
+  margin-top: 8px;
+}
+
+/* Dashboard */
+.admin-dashboard h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.admin-dashboard h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.status-buttons {
+  margin-bottom: 25px;
+}
+
+.status-buttons button {
+  padding: 12px 28px;
+  margin: 0 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.under-review-btn {
+  background: #f57c00;
+}
+
+.under-review-btn:hover { background: #ef6c00; }
+
+.resolved-btn {
+  background: #388e3c;
+}
+
+.resolved-btn:hover { background: #2e7d32; }
+
+/* Table */
+.complaints-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.complaints-table th, .complaints-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.complaints-table th {
+  background: #1976d2;
+  color: #fff;
+  text-align: center;
+}
+
+.complaints-table td {
+  text-align: center;
+}

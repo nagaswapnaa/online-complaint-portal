@@ -1,0 +1,198 @@
+/* General Page */
+.my-complaints-page {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background: linear-gradient(to right, #f5f7fa, #e9eff5);
+  min-height: 100vh;
+}
+
+.page-title {
+  margin-bottom: 40px;
+  color: #222;
+  font-weight: 700;
+  font-size: 30px;
+}
+
+/* Tabs with gradient */
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 35px;
+}
+
+.tab-btn {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+  background: #f0f0f0;
+  transition: all 0.4s ease;
+}
+
+.tab-btn.active {
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transform: translateY(-2px);
+}
+
+.tab-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Complaint Cards */
+.complaint-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+}
+
+.complaint-card {
+  width: 100%;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  overflow: hidden;
+  text-align: left;
+  border-left: 6px solid #1976d2; /* default, overridden inline */
+}
+
+.complaint-card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border-bottom: 1px solid #eee;
+  background: linear-gradient(to right, #f9fbfd, #eef3f9);
+}
+
+.complaint-title {
+  font-size: 21px;
+  font-weight: 600;
+  color: #222;
+}
+
+.status-label {
+  color: #fff;
+  padding: 7px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Card Body */
+.card-body {
+  padding: 22px 28px;
+}
+
+.card-item {
+  margin-bottom: 14px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description {
+  color: #555;
+}
+
+/* File Button */
+.file-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.file-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Timeline */
+.timeline {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.timeline h4 {
+  margin-bottom: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #1976d2;
+}
+
+.timeline-item {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+  color: #555;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: #42a5f5;
+  border-radius: 50%;
+}
+
+/* Timeline Animation */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error / Empty / Loading */
+.error-text {
+  color: red;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.empty-text {
+  color: #777;
+  font-style: italic;
+}
+
+.loading-text {
+  color: #555;
+  font-style: italic;
+}

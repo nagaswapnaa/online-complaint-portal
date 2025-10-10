@@ -1,0 +1,131 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Page Layout */
+.page-container {
+  background: #f9f9f9; /* light grey background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Header */
+.header {
+  background: #2e7d32; /* dark green */
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ✅ Welcome Note */
+.welcome-note {
+  background: white;
+  margin: 30px auto 10px auto;
+  padding: 10px 10px;
+  border-left: 6px solid #43a047; /* green bar */
+  border-radius: 10px;
+  width: 80%;
+  max-width: 900px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-note h2 {
+  color: #2e7d32;
+  margin-bottom: 10px;
+}
+
+.welcome-note p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ✅ Form Card */
+.form-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 600px;
+  max-width: 90%;
+  margin: 20px auto 40px auto;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+/* Messages */
+.message {
+  text-align: center;
+  margin-bottom: 15px;
+  color: red;
+  font-weight: bold;
+}
+
+/* Input fields */
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+input:focus {
+  border-color: #43a047; /* green border on focus */
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 14px;
+  background: #43a047; /* green */
+  border: none;
+  color: white;
+  font-size: 17px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #2e7d32;
+}
+/* Popup message style */
+.message.popup {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+  animation: fadeOut 1.5s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
