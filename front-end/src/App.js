@@ -8,6 +8,16 @@ import Dashboard from "./Dashboard";
 import ComplaintStatus from "./ComplaintStatus";
 import ComplaintPortal from "./ComplaintPortal"; // ✅ new complaint submission page
 
+import EscalateComplaint from "./EscalateComplaint";
+import UserEscalateComplaint from "./UserEscalateComplaint";
+
+import ReportsExports from "./ReportsExports";
+import ReportChart from './ReportChart';
+import Reports from "./Reports";
+import AdminReports from "./AdminReports";
+
+
+
 // Protected Route Wrapper
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -71,6 +81,13 @@ function App() {
           <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/status" element={<ProtectedRoute><ComplaintStatus /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/login" />} />
+         <Route path="/admin/escalate/:id" element={ <ProtectedRoute adminOnly={true}> <EscalateComplaint /> </ProtectedRoute>}/>
+        <Route path="/escalate/:id" element={ <ProtectedRoute> <UserEscalateComplaint /></ProtectedRoute> }/>
+        <Route path="/reports" element={<ReportsExports />} />
+        <Route path="/admin/reports" element={<Reports />} />
+        <Route path="/admin/reports" element={<AdminReports />} />
+        
+
         </Routes>
       </div>
     </Router>

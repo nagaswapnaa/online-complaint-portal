@@ -1,9 +1,9 @@
-// routes/complaints.js
 const express = require("express");
-const router = express.Router();  // ✅ Make sure this is at the top
+const router = express.Router();
 const db = require("../db");
 const multer = require("multer");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
 
 // ------------------ Multer setup ------------------
 const storage = multer.diskStorage({
@@ -72,14 +72,11 @@ router.patch("/:id/status", async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  console.log("Incoming PATCH request for complaint:", id); // Debug
-  console.log("REQ BODY:", req.body); // Debug
-
   if (!status) {
     return res.status(400).json({ success: false, message: "Status is required" });
   }
 
-  const allowedStatuses = ["New", "Under Review", "Resolved"];
+  const allowedStatuses = ["New", "Under Review", "Resolved", "Escalated"];
   if (!allowedStatuses.includes(status)) {
     return res.status(400).json({ success: false, message: "Invalid status value" });
   }
@@ -93,6 +90,97 @@ router.patch("/:id/status", async (req, res) => {
   } catch (err) {
     console.error("Error updating complaint status:", err);
     res.status(500).json({ success: false, message: "Database error" });
+  }
+});
+// ---------------- User Escalate Complaint ----------------
+
+router.post("/:id/escalate", async (req, res) => {
+  const complaintId = req.params.id;
+  const { reason } = req.body; // only reason from user
+
+  if (!reason || reason.trim() === "") {
+    return res.status(400).json({ success: false, message: "Reason is required" });
+  }
+
+  try {
+    // Check complaint exists
+    const [complaints] = await db.query("SELECT * FROM complaints WHERE id = ?", [complaintId]);
+    if (complaints.length === 0) return res.status(404).json({ success: false, message: "Complaint not found" });
+
+    // Automatically pick first active senior admin
+    const [admins] = await db.query("SELECT * FROM senior_admins WHERE active = 1 ORDER BY id LIMIT 1");
+    if (admins.length === 0) return res.status(400).json({ success: false, message: "No active senior admin found" });
+
+    const seniorAdmin = admins[0];
+
+    // Update complaint
+    await db.query(
+      `UPDATE complaints 
+       SET escalated = TRUE,
+           escalation_reason = ?,
+           escalation_level = IFNULL(escalation_level, 0) + 1,
+           assigned_admin_id = ?,
+           escalated_at = NOW(),
+           updated_at = NOW()
+       WHERE id = ?`,
+      [reason, seniorAdmin.id, complaintId]
+    );
+
+    const complaint = complaints[0];
+
+    // Notifications
+    await db.query(
+      "INSERT INTO notifications (user_id, message, url) VALUES (?, ?, ?)",
+      [complaint.user_id, `Your complaint "${complaint.title}" has been escalated to ${seniorAdmin.name}.`, `/complaints/${complaintId}`]
+    );
+    await db.query(
+      "INSERT INTO notifications (admin_id, message, url) VALUES (?, ?, ?)",
+      [seniorAdmin.id, `You have been assigned escalated complaint ID ${complaintId}.`, `/admin/complaints/${complaintId}`]
+    );
+
+    res.json({ success: true, message: `Complaint escalated to ${seniorAdmin.name}` });
+  } catch (err) {
+    console.error("User escalation failed:", err);
+    res.status(500).json({ success: false, message: "Server error while escalating complaint" });
+  }
+});
+
+
+// ---------------- Admin Escalate Complaint ----------------
+router.post("/:id/escalate/admin", async (req, res) => {
+  const complaintId = req.params.id;
+  const { assigned_to, reason } = req.body;
+
+  if (!assigned_to || !reason) return res.status(400).json({ success: false, message: "Admin and reason required" });
+
+  try {
+    const [complaints] = await db.query("SELECT * FROM complaints WHERE id = ?", [complaintId]);
+    if (complaints.length === 0) return res.status(404).json({ success: false, message: "Complaint not found" });
+
+    // Update complaint
+    await db.query(
+      `UPDATE complaints 
+       SET escalated = TRUE, escalation_reason = ?, escalation_level = IFNULL(escalation_level,0)+1,
+           assigned_admin_id = ?, escalated_at = NOW(), updated_at = NOW() 
+       WHERE id = ?`,
+      [reason, assigned_to, complaintId]
+    );
+
+    // Notifications
+    const complaint = complaints[0];
+    await db.query(
+      "INSERT INTO notifications (user_id, message, url) VALUES (?, ?, ?)",
+      [complaint.user_id, `Your complaint "${complaint.title}" has been escalated to admin.`, `/complaints/${complaintId}`]
+    );
+    await db.query(
+      "INSERT INTO notifications (admin_id, message, url) VALUES (?, ?, ?)",
+      [assigned_to, `You have been assigned escalated complaint ID ${complaintId}.`, `/admin/complaints/${complaintId}`]
+    );
+
+    res.json({ success: true, message: "Complaint escalated successfully" });
+  } catch (err) {
+    console.error("Admin escalation failed:", err);
+    res.status(500).json({ success: false, message: "Server error while escalating complaint" });
   }
 });
 
