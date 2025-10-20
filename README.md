@@ -1,4 +1,7 @@
+🚀 ResolveIT: Smart Grievance & Feedback Management System
+
 A full-stack web application that allows users to register complaints, track their status, and enables admins to manage, resolve, and generate insightful reports.
+
 🚀 **Features**
 • User Registration and Login
 
